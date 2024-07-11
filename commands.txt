@@ -1,0 +1,200 @@
+# Instalace 'jq' balíčku pro JSON soubory:
+sudo su
+yum update				          # potřebné kroky potvrzeny nebo zamítnuty pomocí y/N
+yum install jq			        # potřebné kroky potvrzeny nebo zamítnuty pomocí y/N
+exit
+
+# Stažení zadání:
+cd /home/student/Lekce4
+wget https://raw.githubusercontent.com/ENGETO-Academy/Linux-public/main/files/pwlist.csv
+
+# Vytvoření základních textových dokumentů (podle jména generátorů):
+cat pwlist.csv | grep "Andoes" > Andoes.txt
+cat pwlist.csv | grep "Cairo" > Cairo.txt
+cat pwlist.csv | grep "HenrsPW" > HernsPW.txt
+cat pwlist.csv | grep "Orion1.15" > Orion1.15.txt
+cat pwlist.csv | grep "PWmk" > PWmk.txt                     # soubory .txt se mohou jmenovat jakkoli
+
+# Vytvoření a otevření budoucího bash script file:
+vim bash.sh                                                 # místo "bash.sh" se může jmenovat jakkoli
+
+# Editace budoucího bash script file ve VIM:
+# VIM EDITOR:
+
+#____________________________________#
+#!/bin/bash
+
+var1="$(cat /home/student/Lekce4/Andoes.txt | cut -f1 -d, | uniq)"
+var2="$(cat /home/student/Lekce4/Andoes.txt | wc -l)"
+var3="$(cat /home/student/Lekce4/Andoes.txt | cut -f2- -d, | grep -x ".\{8,100\}" | wc -l)"
+var4="$(cat /home/student/Lekce4/Andoes.txt | cut -f2- -d, | grep "[[:lower:]]" | wc -l)"
+var5="$(cat /home/student/Lekce4/Andoes.txt | cut -f2- -d, | grep "[[:upper:]]" | wc -l)"
+var6="$(cat /home/student/Lekce4/Andoes.txt | cut -f2- -d, | grep "[[:digit:]]" | wc -l)"
+var7="$(cat /home/student/Lekce4/Andoes.txt | cut -f2- -d, | grep "[[:punct:]]" | wc -l)"
+var8="$(cat /home/student/Lekce4/Andoes.txt | cut -f2- -d, | sort | uniq -w3 | wc -l)"
+var9="$(cat /home/student/Lekce4/Andoes.txt | cut -f2- -d, | rev | sort | uniq -w3 | wc -l)"
+
+echo '"type": "'$var1'",'
+echo '"total_count": '$var2','
+echo '"min_length": '$var3','
+echo '"min_lower": '$var4','
+echo '"min_upper": '$var5','
+echo '"min_digit": '$var6','
+echo '"min_special": '$var7','
+echo '"valid_prefix": '$var8','
+echo '"valid_suffix": '$var9','
+
+i=0
+if [ $var3 -eq $var2 ]; then
+        varA="$(( i + 1 ))"
+else
+        varA="$(( i + 0 ))"
+fi
+#____________________________________#
+
+if [ $var4 -eq $var2 ]; then
+        varB="$(( varA + 1 ))"
+else
+        varB="$(( varA + 0 ))"
+fi
+#____________________________________#
+
+if [ $var5 -eq $var2 ]; then
+        varC="$(( varB + 1 ))"
+else
+        varC="$(( varB + 0 ))"
+fi
+#____________________________________#
+
+if [ $var6 -eq $var2 ]; then
+        varD="$(( varC + 1 ))"
+else
+        varD="$(( varC + 0 ))"
+fi
+#____________________________________#
+
+if [ $var7 -eq $var2 ]; then
+        varE="$(( varD + 1 ))"
+else
+        varE="$(( varD + 0 ))"
+fi
+#____________________________________#
+
+if [ $var8 -eq $var2 ]; then
+        varF="$(( varE + 1 ))"
+else
+        varF="$(( varE + 0 ))"
+fi
+#____________________________________#
+
+if [ $var9 -eq $var2 ]; then
+        varG="$(( varF + 1 ))"
+else
+        varG="$(( varF + 0 ))"
+fi
+echo '"score": '$varG'' 
+
+#____________________________________#
+
+ -------ESC :wq!-------       # Nezapomenout uložit práci!
+
+# Vytvoříme report.json soubor:
+# COMMAND LINE:
+vim report.json
+
+# VIM EDITOR:
+{"name": "Martin Fedorcak","date": "
+
+-------ESC :wq!-------       # Nezapomenout uložit práci!
+
+# Vložíme datum do report.json:
+# COMMAND LINE:
+date +%d-%m-%Y/%H:%M >> report.json
+vim report.json
+
+# VIM EDITOR:
+# Upravíme zápis a doplníme, aby odpovídal tomuto:    {"name": "Martin Fedorcak","date": "10-07-2024/12:03","winner": "x","data":[{
+
+-------ESC :wq!-------       # Nezapomenout uložit práci!
+
+# COMMAND LINE:
+# Doplnění výsledků scriptu bash.sh do file report.json:
+./bash.sh >> report.json
+vim bash.sh
+
+# VIM EDITOR:
+# Přepsání bash.sh z file Andoes.txt na další --> Pouze line 3-11 změnou cesty (/home/student/Lekce4/Andoes.txt --> /home/student/Lekce4/Cairo.txt), takto s každým file (Andoes.txt, Cairo.txt, HernsPW.txt, Orion1.15.txt, PWmk.txt)!
+# Po každé změně z jednoho file na druhý --> COMM.LINE: ./bash.sh >> report.json
+
+# COMMAND LINE:
+vim report.json
+
+#VIM EDITOR:
+# Úprava .json file pro jeho spuštění přes .jq command na:
+
+
+{"name": "Martin Fedorcak","date": "10-07-2024/12:03","winner": "Andoes","data":[{
+"type": "Andoes",
+"total_count": 42,
+"min_length": 42,
+"min_lower": 42,
+"min_upper": 42,
+"min_digit": 0,
+"min_special": 27,
+"valid_prefix": 42,
+"valid_suffix": 42,
+"score": 5
+},{
+"type": "Cairo",
+"total_count": 99,
+"min_length": 81,
+"min_lower": 97,
+"min_upper": 97,
+"min_digit": 73,
+"min_special": 62,
+"valid_prefix": 99,
+"valid_suffix": 94,
+"score": 1
+},{
+"type": "HernsPW",
+"total_count": 91,
+"min_length": 91,
+"min_lower": 91,
+"min_upper": 91,
+"min_digit": 85,
+"min_special": 71,
+"valid_prefix": 91,
+"valid_suffix": 90,
+"score": 4
+},{
+"type": "Orion1.15",
+"total_count": 85,
+"min_length": 85,
+"min_lower": 85,
+"min_upper": 84,
+"min_digit": 73,
+"min_special": 0,
+"valid_prefix": 84,
+"valid_suffix": 85,
+"score": 3
+},{
+"type": "PWmk",
+"total_count": 74,
+"min_length": 63,
+"min_lower": 74,
+"min_upper": 74,
+"min_digit": 0,
+"min_special": 55,
+"valid_prefix": 74,
+"valid_suffix": 72,
+"score": 3
+}]}
+
+
+# Kromě správně sepsaných závorek apod. nesmíme zapomenout na line 1 editovat (ze získaných výsledků a podle bodů) parametr "winner" z 'X' na (v tomto případě) 'Andoes'
+
+-------ESC :wq!-------       # Nezapomenout uložit práci!
+
+# COMMAND LINE:
+# Výsledné spuštění report.json file:
+cat report.json | jq
