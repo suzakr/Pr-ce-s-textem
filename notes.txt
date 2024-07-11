@@ -1,0 +1,224 @@
+1.) Jako první jsem si stáhnul a nainstaloval rozšíření, které mi dovolí použít 'jq' command, který mi dovolí vytvořit potřebný soubor JSON. To jsem po několika jiných pokusech, protože jsem zjistil, že to některými dalšími způsoby nejde, udělal nakonec takto:
+
+	a) přepnul jsem se na kořenového uživatele 'root': 
+		sudo su
+	b) dále jsem použil command, který mi aktualizoval všechny dosavadní balíčky:
+		yum update
+	c) nakonec jsem použil poslední command, který mi nainstaloval balíček, který jsem potřeboval, čili balíček 'jq':
+		yum install jq
+	d) na závěr jsem se jen zpátky přepnul na svého 'student' uživatele:
+		exit
+
+2.) Dalším krokem bylo stažení zadání, které jsem si zvolil stáhnout do této directory /home/student/Lekce4:
+
+	a) nejprve jsem se do ní přesunul pomocí
+		cd /home/student/Lekce4
+	b) poté jsem do ní stáhnul potřebný soubor skrze zkopírování linku
+		wget https://raw.githubusercontent.com/ENGETO-Academy/Linux-public/main/files/pwlist.csv
+
+3.) Přemýšlel jsem, jak dále pokračovat a přišel jsem k tomu, že bude pro mě jednodušší, když si ze zadání vytáhnu konkrétní skupiny.
+
+	a) Z každé skupiny generátorů jsem si udělal zvlášť text file podle jména určitého generátoru:
+		cat pwlist.csv | grep "Andoes" > Andoes.txt
+		cat pwlist.csv | grep "Cairo" > Cairo.txt
+		cat pwlist.csv | grep "HenrsPW" > HernsPW.txt
+		cat pwlist.csv | grep "Orion1.15" > Orion1.15.txt
+		cat pwlist.csv | grep "PWmk" > PWmk.txt
+
+4.) Dále jsem zvažoval, jak zadání splnit a po nějakém čase googlení a dívání se na manuály jsem se rozhodl zadání splnit skrze tzv. bash script, který mi nakonec docela dobře zjednodušil práci, navíc skrze něj můžu později kdykoli přidat klidně další vzorky bez složitých úprav (pokud by bylo třeba).
+
+	a) Vytvořil jsem si file, který jsem nazval jednoduše "bash.sh", čímž se mi file (prázdný) i spustil ve VIM editoru:
+		vim bash.sh
+	b) Dále jsem musel určit, aby se z jednoduchého file stal potřebný bash script, čili jsem na line 1 napsal:
+		#!/bin/bash
+	c) Nakonec jsem napsal potřebné commandy, aby bash script fungoval, jak má a aby mi dělal, co potřebuju:
+		var1="$(cat /home/student/Lekce4/Andoes.txt | cut -f1 -d, | uniq)"
+		var2="$(cat /home/student/Lekce4/Andoes.txt | wc -l)"
+		var3="$(cat /home/student/Lekce4/Andoes.txt | cut -f2- -d, | grep -x ".\{8,100\}" | wc -l)"
+		var4="$(cat /home/student/Lekce4/Andoes.txt | cut -f2- -d, | grep "[[:lower:]]" | wc -l)"
+		var5="$(cat /home/student/Lekce4/Andoes.txt | cut -f2- -d, | grep "[[:upper:]]" | wc -l)"
+		var6="$(cat /home/student/Lekce4/Andoes.txt | cut -f2- -d, | grep "[[:digit:]]" | wc -l)"
+		var7="$(cat /home/student/Lekce4/Andoes.txt | cut -f2- -d, | grep "[[:punct:]]" | wc -l)"
+		var8="$(cat /home/student/Lekce4/Andoes.txt | cut -f2- -d, | sort | uniq -w3 | wc -l)"
+		var9="$(cat /home/student/Lekce4/Andoes.txt | cut -f2- -d, | rev | sort | uniq -w3 | wc -l)"
+
+# Těmito commandy jsem vlastně vytvořil nějaké variables (např. var1, var2 ...), které mi uloží pod danou variable vygenerované číslo následujícím commandem (cat /home/student/...), který mi např. vybere název generátoru z naší vytvořené složky Andoes.txt --> line1 nebo třeba vybere všechna hesla ze druhého sloupce z naší Andoes.txt a vybere ta, která obsahují VELKÁ písmena --> line5.
+# Variables mohou být pojmenovány jakkoli, už jsem dostal od kamaráda typ, že je fajn je pojmenovávat podle toho, co dělají, aby v tom nebyl nepořádek zvláště pro ty, kteří třeba script nepsali.
+
+		echo '"type": "'$var1'",'
+		echo '"total_count": '$var2','
+		echo '"min_length": '$var3','
+		echo '"min_lower": '$var4','
+		echo '"min_upper": '$var5','
+		echo '"min_digit": '$var6','
+		echo '"min_special": '$var7','
+		echo '"valid_prefix": '$var8','
+		echo '"valid_suffix": '$var9','
+
+# Těmito commandy jsem si vyvolal výstup z předchozích commandů pomocí variables skrze echo, což mi udělalo první výstupy z vytvořeného bash.sh scriptu.
+
+		i=0
+		if [ $var3 -eq $var2 ]; then
+        		varA="$(( i + 1 ))"
+		else
+        		varA="$(( i + 0 ))"
+		fi
+		#____________________________________#
+
+		if [ $var4 -eq $var2 ]; then
+        		varB="$(( varA + 1 ))"
+		else
+        		varB="$(( varA + 0 ))"
+		fi
+		#____________________________________#
+
+		if [ $var5 -eq $var2 ]; then
+        		varC="$(( varB + 1 ))"
+		else
+        		varC="$(( varB + 0 ))"
+		fi
+		#____________________________________#
+
+		if [ $var6 -eq $var2 ]; then
+        		varD="$(( varC + 1 ))"
+		else
+        		varD="$(( varC + 0 ))"
+		fi
+		#____________________________________#
+
+		if [ $var7 -eq $var2 ]; then
+        		varE="$(( varD + 1 ))"
+		else
+        		varE="$(( varD + 0 ))"
+		fi
+		#____________________________________#
+
+		if [ $var8 -eq $var2 ]; then
+       			varF="$(( varE + 1 ))"
+		else
+       			varF="$(( varE + 0 ))"
+		fi
+		#____________________________________#
+
+		if [ $var9 -eq $var2 ]; then
+        		varG="$(( varF + 1 ))"
+		else
+        		varG="$(( varF + 0 ))"
+		fi
+		echo '"score": '$varG'' 
+
+# Nakonec jsem musel sečíst všechna kritéria na výsledné body jednoho generátoru, čili jsem si sestavil jednoduchou strukturu if statement, která mi jednoduše porovná předchozí variables a udělá z nich další, které buď splní statement a přičte se k nim +1 nebo nesplní a přičte se k nim +0 (True/False). Posledním echo commandem jsem si zajistil i výstup výsledných sečtených bodů.
+
+	d) Samozřejmě jsem si svou práci ve VIM uložil, což mi také ukončilo VIM editor:
+		ESC :wq!
+
+5.) Poté jsem si vytvořil další file, který bude finálním filem, tedy "report.json" a začal jsem i jej editovat ve VIM. Abych ale mohl ve finální fázi file otevřít pomocí "jq" commandu, musel být napsán ve správné struktuře, kterou jsem docela brzy pochopil opět pomocí google.
+
+	a) Vytvoření "report.json" a jeho otevření:
+		vim report.json
+	b) Dále jsem jej začal editovat pomocí správné struktury:
+		{"name": "Martin Fedorcak","date": "
+	c) Opět jsem uložil a ukončil VIM editor:
+		ESC :wq!
+
+6.) .json file jsem ještě neměl z daleka hotov, ale musel jsem přijít na to, jak do něj vložit datum ve správném formátu. Toho jsem nakonec docílil takto:
+
+	a) Vytvoření data ve správném formátu a jeho vložení do .json file:
+		date +%d-%m-%Y/%H:%M >> report.json
+# >> toto znaménko mi vložilo datum do file report.json za již mnou vytvořená data.
+
+7.) Dále jsem znovu otevřel file report.json a pokračoval v jeho editaci ve VIM.
+
+	a) Otevřel jsem si report.json ve VIM:
+		vim report.json
+	b) Pokračoval jsem v editaci tak, aby konečná struktura vypadala takto:
+		{"name": "Martin Fedorcak","date": "10-07-2024/12:03","winner": "x","data":[{
+# Mohli jsme si všimnout, že po otevření nám přibylo datum v našem zvoleném formátu, které jsme si přidali.
+	c) Opět jsem uložil a ukončil VIM editor:
+		ESC :wq!
+
+8.) Už jsem byl na dobré cestě k dokončení zadání. Stačilo už jen pomocí mého bash scriptu "bash.sh" vložit data z .txt files do report.json file.
+
+	a) Bash, tak jak jsem si jej napsal, byl připraven na vložení dat z prvního .txt file, tedy z Andoes.txt:
+		./bash.sh >> report.json
+# Tímto jsem si přidal data z Andoes.txt skrze bash.sh do report.json.
+	b) To samé jsem musel ale udělat i z dalších .txt files (Cairo.txt, HernsPW.txt, Orion1.15.txt, PWmk.txt). Otevřel jsem si tedy opět můj bash.sh:
+		vim bash.sh
+	c) A upravil jsem ho velmi jednoduchým způsobem tak, aby vytahoval data z dalších .txt files, které mi chybí:
+# U všech cest z line 3-11, tedy např. "/home/student/Lekce4/Andoes.txt" jsem upravil konec tak, aby otevíral další file, tedy např. takto: "/home/student/Lekce4/Cairo.txt". Nic jiného!
+	d) Opět jsem uložil a ukončil VIM editor:
+		ESC :wq!
+	e) A znovu jsem rozjel svůj bash script, pomocí nějž jsem přetáhl data z dalšího .txt (který jsem si zrovna zvolil, např. Cairo.txt) do svého report.json file:
+		./bash.sh >> report.json
+	f) Dále jsem vytáhl data ze všech ostatních vytvořených .txt:
+# Opakoval jsem postup 8.b) - 8.e), dokud jsem neměl v report.json všechny data z mých .txt files (tedy z Andoes.txt, Cairo.txt, HernsPW.txt, Orion1.15.txt, PWmk.txt)
+
+9.) Ve svém report.json file jsem měl už všechna data z .txt files a mohl jsem se tedy pustit do finální editace report.json, abych mohl file spustit pomocí "jq" command.
+
+	a) Opět jsem si spustil report.json ve VIM editoru:
+		vim report.json
+	b) Po spuštění jsem viděl, že mi přibyla velká spousta dat z mého bash.sh scriptu, ale krásně seřazená tak, aby mi zjednodušila finální editaci. Finální editace tedy vypadá takto:
+		{"name": "Martin Fedorcak","date": "10-07-2024/12:03","winner": "Andoes","data":[{
+		"type": "Andoes",
+		"total_count": 42,
+		"min_length": 42,
+		"min_lower": 42,
+		"min_upper": 42,
+		"min_digit": 0,
+		"min_special": 27,
+		"valid_prefix": 42,
+		"valid_suffix": 42,
+		"score": 5
+		},{
+		"type": "Cairo",
+		"total_count": 99,
+		"min_length": 81,
+		"min_lower": 97,
+		"min_upper": 97,
+		"min_digit": 73,
+		"min_special": 62,
+		"valid_prefix": 99,
+		"valid_suffix": 94,
+		"score": 1
+		},{
+		"type": "HernsPW",
+		"total_count": 91,
+		"min_length": 91,
+		"min_lower": 91,
+		"min_upper": 91,
+		"min_digit": 85,
+		"min_special": 71,
+		"valid_prefix": 91,
+		"valid_suffix": 90,
+		"score": 4
+		},{
+		"type": "Orion1.15",
+		"total_count": 85,
+		"min_length": 85,
+		"min_lower": 85,
+		"min_upper": 84,
+		"min_digit": 73,
+		"min_special": 0,
+		"valid_prefix": 84,
+		"valid_suffix": 85,
+		"score": 3
+		},{
+		"type": "PWmk",
+		"total_count": 74,
+		"min_length": 63,
+		"min_lower": 74,
+		"min_upper": 74,
+		"min_digit": 0,
+		"min_special": 55,
+		"valid_prefix": 74,
+		"valid_suffix": 72,
+		"score": 3
+		}]}
+# Nejdůležitější bylo správné napsání závorek a jejich pořadí. Mezery a new lines na otevření přes "jq" nemají žádný vliv, celé to tedy mohlo klidně být napsané jako jeden řetězec. Seřazení bylo čistě pro estetiku a pro zjednodušení orientace.
+	c) Opět jsem uložil a ukončil VIM editor:
+		ESC :wq!
+
+10.) Práce byla hotová a instalací "jq" rozšíření do Linuxu, což jsem dělal v prvním kroku, jsem si mohl ověřit, zda to všechno funguje správně.
+
+	a) Odpálil jsem poslední command pro spuštění report.json file "jq" commandem"
+		cat report.json | jq
