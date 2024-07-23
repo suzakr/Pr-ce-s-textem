@@ -1,7 +1,7 @@
 # Instalace 'jq' balíčku pro JSON soubory:
 sudo su
-yum update				          # potřebné kroky potvrzeny nebo zamítnuty pomocí y/N
-yum install jq			        # potřebné kroky potvrzeny nebo zamítnuty pomocí y/N
+yum update				# potřebné kroky potvrzeny nebo zamítnuty pomocí y/N
+yum install jq			# potřebné kroky potvrzeny nebo zamítnuty pomocí y/N
 exit
 
 # Stažení zadání:
@@ -16,7 +16,7 @@ cat pwlist.csv | grep "Orion1.15" > Orion1.15.txt
 cat pwlist.csv | grep "PWmk" > PWmk.txt                     # soubory .txt se mohou jmenovat jakkoli
 
 # Vytvoření a otevření budoucího bash script file:
-vim bash.sh                                                 # místo "bash.sh" se může jmenovat jakkoli
+vim bash.sh                          # místo "bash.sh" se může jmenovat jakkoli
 
 # Editace budoucího bash script file ve VIM:
 # VIM EDITOR:
@@ -31,8 +31,8 @@ var4="$(cat /home/student/Lekce4/Andoes.txt | cut -f2- -d, | grep "[[:lower:]]" 
 var5="$(cat /home/student/Lekce4/Andoes.txt | cut -f2- -d, | grep "[[:upper:]]" | wc -l)"
 var6="$(cat /home/student/Lekce4/Andoes.txt | cut -f2- -d, | grep "[[:digit:]]" | wc -l)"
 var7="$(cat /home/student/Lekce4/Andoes.txt | cut -f2- -d, | grep "[[:punct:]]" | wc -l)"
-var8="$(cat /home/student/Lekce4/Andoes.txt | cut -f2- -d, | sort | uniq -w3 | wc -l)"
-var9="$(cat /home/student/Lekce4/Andoes.txt | cut -f2- -d, | rev | sort | uniq -w3 | wc -l)"
+var8="$(cat -et /home/student/Lekce4/PWmk.txt | cut -f2- -d, | cut -c1-3 | sort | uniq -u | wc -l)"
+var9="$(cat -et /home/student/Lekce4/PWmk.txt | cut -f2- -d, | rev | cut -c4-6 | rev | sort | uniq -u | wc -l)"
 
 echo '"type": "'$var1'",'
 echo '"total_count": '$var2','
@@ -44,56 +44,60 @@ echo '"min_special": '$var7','
 echo '"valid_prefix": '$var8','
 echo '"valid_suffix": '$var9','
 
-i=0
-if [ $var3 -eq $var2 ]; then
-        varA="$(( i + 1 ))"
+if [ $var2 -lt 50 ]; then
+        echo '"score": -1'
 else
-        varA="$(( i + 0 ))"
-fi
+
+	i=0
+	if [ $var3 -eq $var2 ]; then
+        	varA="$(( i + 1 ))"
+	else
+        	varA="$(( i + 0 ))"
+	fi
 #____________________________________#
 
-if [ $var4 -eq $var2 ]; then
-        varB="$(( varA + 1 ))"
-else
-        varB="$(( varA + 0 ))"
-fi
+	if [ $var4 -eq $var2 ]; then
+        	varB="$(( varA + 1 ))"
+	else
+        	varB="$(( varA + 0 ))"
+	fi
 #____________________________________#
 
-if [ $var5 -eq $var2 ]; then
-        varC="$(( varB + 1 ))"
-else
-        varC="$(( varB + 0 ))"
-fi
+	if [ $var5 -eq $var2 ]; then
+        	varC="$(( varB + 1 ))"
+	else
+        	varC="$(( varB + 0 ))"
+	fi
 #____________________________________#
 
-if [ $var6 -eq $var2 ]; then
-        varD="$(( varC + 1 ))"
-else
-        varD="$(( varC + 0 ))"
-fi
+	if [ $var6 -eq $var2 ]; then
+        	varD="$(( varC + 1 ))"
+	else
+        	varD="$(( varC + 0 ))"
+	fi
 #____________________________________#
 
-if [ $var7 -eq $var2 ]; then
-        varE="$(( varD + 1 ))"
-else
-        varE="$(( varD + 0 ))"
-fi
+	if [ $var7 -eq $var2 ]; then
+        	varE="$(( varD + 1 ))"
+	else
+        	varE="$(( varD + 0 ))"
+	fi
 #____________________________________#
 
-if [ $var8 -eq $var2 ]; then
-        varF="$(( varE + 1 ))"
-else
-        varF="$(( varE + 0 ))"
-fi
+	if [ $var8 -eq $var2 ]; then
+        	varF="$(( varE + 1 ))"
+	else
+        	varF="$(( varE + 0 ))"
+	fi
 #____________________________________#
 
-if [ $var9 -eq $var2 ]; then
-        varG="$(( varF + 1 ))"
-else
-        varG="$(( varF + 0 ))"
+	if [ $var9 -eq $var2 ]; then
+        	varG="$(( varF + 1 ))"
+	else
+        	varG="$(( varF + 0 ))"
+	fi
+	echo '"score": '$varG'' 
 fi
-echo '"score": '$varG'' 
-
 #____________________________________#
 
  -------ESC :wq!-------       # Nezapomenout uložit práci!
@@ -133,7 +137,7 @@ vim report.json
 # Úprava .json file pro jeho spuštění přes .jq command na:
 
 
-{"name": "Martin Fedorcak","date": "10-07-2024/12:03","winner": "Andoes","data":[{
+{"name": "Martin Fedorcak","date": "10-07-2024/12:03","winner": "HernsPW","data":[{
 "type": "Andoes",
 "total_count": 42,
 "min_length": 42,
@@ -143,7 +147,7 @@ vim report.json
 "min_special": 27,
 "valid_prefix": 42,
 "valid_suffix": 42,
-"score": 5
+"score": -1
 },{
 "type": "Cairo",
 "total_count": 99,
@@ -153,8 +157,8 @@ vim report.json
 "min_digit": 73,
 "min_special": 62,
 "valid_prefix": 99,
-"valid_suffix": 94,
-"score": 1
+"valid_suffix": 99,
+"score": 2
 },{
 "type": "HernsPW",
 "total_count": 91,
@@ -164,8 +168,8 @@ vim report.json
 "min_digit": 85,
 "min_special": 71,
 "valid_prefix": 91,
-"valid_suffix": 90,
-"score": 4
+"valid_suffix": 91,
+"score": 5
 },{
 "type": "Orion1.15",
 "total_count": 85,
@@ -174,7 +178,7 @@ vim report.json
 "min_upper": 84,
 "min_digit": 73,
 "min_special": 0,
-"valid_prefix": 84,
+"valid_prefix": 83,
 "valid_suffix": 85,
 "score": 3
 },{
@@ -186,10 +190,9 @@ vim report.json
 "min_digit": 0,
 "min_special": 55,
 "valid_prefix": 74,
-"valid_suffix": 72,
-"score": 3
+"valid_suffix": 74,
+"score": 4
 }]}
-
 
 # Kromě správně sepsaných závorek apod. nesmíme zapomenout na line 1 editovat (ze získaných výsledků a podle bodů) parametr "winner" z 'X' na (v tomto případě) 'Andoes'
 
@@ -198,3 +201,4 @@ vim report.json
 # COMMAND LINE:
 # Výsledné spuštění report.json file:
 cat report.json | jq
+
