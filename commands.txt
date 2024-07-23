@@ -1,3 +1,5 @@
+#Martin Fedorčák / Discord - Martin F.
+
 # Instalace 'jq' balíčku pro JSON soubory:
 sudo su
 yum update				# potřebné kroky potvrzeny nebo zamítnuty pomocí y/N
