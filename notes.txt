@@ -41,8 +41,8 @@
 		var5="$(cat /home/student/Lekce4/Andoes.txt | cut -f2- -d, | grep "[[:upper:]]" | wc -l)"
 		var6="$(cat /home/student/Lekce4/Andoes.txt | cut -f2- -d, | grep "[[:digit:]]" | wc -l)"
 		var7="$(cat /home/student/Lekce4/Andoes.txt | cut -f2- -d, | grep "[[:punct:]]" | wc -l)"
-		var8="$(cat /home/student/Lekce4/Andoes.txt | cut -f2- -d, | sort | uniq -w3 | wc -l)"
-		var9="$(cat /home/student/Lekce4/Andoes.txt | cut -f2- -d, | rev | sort | uniq -w3 | wc -l)"
+		var8="$(cat -et /home/student/Lekce4/PWmk.txt | cut -f2- -d, | cut -c1-3 | sort | uniq -u | wc -l)"
+		var9="$(cat -et /home/student/Lekce4/PWmk.txt | cut -f2- -d, | rev | cut -c4-6 | rev | sort | uniq -u | wc -l)"
 
 # Těmito commandy jsem vlastně vytvořil nějaké variables (např. var1, var2 ...), které mi uloží pod danou variable vygenerované číslo následujícím commandem (cat /home/student/...), který mi např. vybere název generátoru z naší vytvořené složky Andoes.txt --> line1 nebo třeba vybere všechna hesla ze druhého sloupce z naší Andoes.txt a vybere ta, která obsahují VELKÁ písmena --> line5.
 # Variables mohou být pojmenovány jakkoli, už jsem dostal od kamaráda typ, že je fajn je pojmenovávat podle toho, co dělají, aby v tom nebyl nepořádek zvláště pro ty, kteří třeba script nepsali.
@@ -58,6 +58,10 @@
 		echo '"valid_suffix": '$var9','
 
 # Těmito commandy jsem si vyvolal výstup z předchozích commandů pomocí variables skrze echo, což mi udělalo první výstupy z vytvořeného bash.sh scriptu.
+
+if [ $var2 -lt 50 ]; then
+        echo '"score": -1'      #Hlídá počet vzorků daného generátoru
+else
 
 		i=0
 		if [ $var3 -eq $var2 ]; then
@@ -107,7 +111,8 @@
 		else
         		varG="$(( varF + 0 ))"
 		fi
-		echo '"score": '$varG'' 
+		echo '"score": '$varG''
+fi
 
 # Nakonec jsem musel sečíst všechna kritéria na výsledné body jednoho generátoru, čili jsem si sestavil jednoduchou strukturu if statement, která mi jednoduše porovná předchozí variables a udělá z nich další, které buď splní statement a přičte se k nim +1 nebo nesplní a přičte se k nim +0 (True/False). Posledním echo commandem jsem si zajistil i výstup výsledných sečtených bodů.
 
@@ -115,7 +120,6 @@
 		ESC :wq!
 
 5.) Poté jsem si vytvořil další file, který bude finálním filem, tedy "report.json" a začal jsem i jej editovat ve VIM. Abych ale mohl ve finální fázi file otevřít pomocí "jq" commandu, musel být napsán ve správné struktuře, kterou jsem docela brzy pochopil opět pomocí google.
-
 	a) Vytvoření "report.json" a jeho otevření:
 		vim report.json
 	b) Dále jsem jej začal editovat pomocí správné struktury:
@@ -124,13 +128,11 @@
 		ESC :wq!
 
 6.) .json file jsem ještě neměl z daleka hotov, ale musel jsem přijít na to, jak do něj vložit datum ve správném formátu. Toho jsem nakonec docílil takto:
-
 	a) Vytvoření data ve správném formátu a jeho vložení do .json file:
 		date +%d-%m-%Y/%H:%M >> report.json
 # >> toto znaménko mi vložilo datum do file report.json za již mnou vytvořená data.
 
 7.) Dále jsem znovu otevřel file report.json a pokračoval v jeho editaci ve VIM.
-
 	a) Otevřel jsem si report.json ve VIM:
 		vim report.json
 	b) Pokračoval jsem v editaci tak, aby konečná struktura vypadala takto:
@@ -140,7 +142,6 @@
 		ESC :wq!
 
 8.) Už jsem byl na dobré cestě k dokončení zadání. Stačilo už jen pomocí mého bash scriptu "bash.sh" vložit data z .txt files do report.json file.
-
 	a) Bash, tak jak jsem si jej napsal, byl připraven na vložení dat z prvního .txt file, tedy z Andoes.txt:
 		./bash.sh >> report.json
 # Tímto jsem si přidal data z Andoes.txt skrze bash.sh do report.json.
@@ -156,11 +157,10 @@
 # Opakoval jsem postup 8.b) - 8.e), dokud jsem neměl v report.json všechny data z mých .txt files (tedy z Andoes.txt, Cairo.txt, HernsPW.txt, Orion1.15.txt, PWmk.txt)
 
 9.) Ve svém report.json file jsem měl už všechna data z .txt files a mohl jsem se tedy pustit do finální editace report.json, abych mohl file spustit pomocí "jq" command.
-
 	a) Opět jsem si spustil report.json ve VIM editoru:
 		vim report.json
 	b) Po spuštění jsem viděl, že mi přibyla velká spousta dat z mého bash.sh scriptu, ale krásně seřazená tak, aby mi zjednodušila finální editaci. Finální editace tedy vypadá takto:
-		{"name": "Martin Fedorcak","date": "10-07-2024/12:03","winner": "Andoes","data":[{
+		{"name": "Martin Fedorcak","date": "10-07-2024/12:03","winner": "HernsPW","data":[{
 		"type": "Andoes",
 		"total_count": 42,
 		"min_length": 42,
@@ -170,7 +170,7 @@
 		"min_special": 27,
 		"valid_prefix": 42,
 		"valid_suffix": 42,
-		"score": 5
+		"score": -1 --> Not enough samples!
 		},{
 		"type": "Cairo",
 		"total_count": 99,
@@ -180,8 +180,8 @@
 		"min_digit": 73,
 		"min_special": 62,
 		"valid_prefix": 99,
-		"valid_suffix": 94,
-		"score": 1
+		"valid_suffix": 99,
+		"score": 2
 		},{
 		"type": "HernsPW",
 		"total_count": 91,
@@ -191,8 +191,8 @@
 		"min_digit": 85,
 		"min_special": 71,
 		"valid_prefix": 91,
-		"valid_suffix": 90,
-		"score": 4
+		"valid_suffix": 91,
+		"score": 5
 		},{
 		"type": "Orion1.15",
 		"total_count": 85,
@@ -201,7 +201,7 @@
 		"min_upper": 84,
 		"min_digit": 73,
 		"min_special": 0,
-		"valid_prefix": 84,
+		"valid_prefix": 83,
 		"valid_suffix": 85,
 		"score": 3
 		},{
@@ -213,14 +213,14 @@
 		"min_digit": 0,
 		"min_special": 55,
 		"valid_prefix": 74,
-		"valid_suffix": 72,
-		"score": 3
+		"valid_suffix": 74,
+		"score": 4
 		}]}
 # Nejdůležitější bylo správné napsání závorek a jejich pořadí. Mezery a new lines na otevření přes "jq" nemají žádný vliv, celé to tedy mohlo klidně být napsané jako jeden řetězec. Seřazení bylo čistě pro estetiku a pro zjednodušení orientace.
+
 	c) Opět jsem uložil a ukončil VIM editor:
 		ESC :wq!
 
 10.) Práce byla hotová a instalací "jq" rozšíření do Linuxu, což jsem dělal v prvním kroku, jsem si mohl ověřit, zda to všechno funguje správně.
-
 	a) Odpálil jsem poslední command pro spuštění report.json file "jq" commandem"
 		cat report.json | jq
