@@ -1,3 +1,5 @@
+#Martin Fedorčák / Discord - Martin F.
+
 1.) Jako první jsem si stáhnul a nainstaloval rozšíření, které mi dovolí použít 'jq' command, který mi dovolí vytvořit potřebný soubor JSON. To jsem po několika jiných pokusech, protože jsem zjistil, že to některými dalšími způsoby nejde, udělal nakonec takto:
 
 	a) přepnul jsem se na kořenového uživatele 'root': 
