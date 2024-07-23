@@ -1,4 +1,4 @@
-{"name": "Martin Fedorcak","date": "10-07-2024/12:03","winner": "Andoes","data":[{
+{"name": "Martin Fedorcak","date": "10-07-2024/12:03","winner": "HernsPW","data":[{
 "type": "Andoes",
 "total_count": 42,
 "min_length": 42,
@@ -8,7 +8,7 @@
 "min_special": 27,
 "valid_prefix": 42,
 "valid_suffix": 42,
-"score": 5
+"score": -1 --> Not enough samples!
 },{
 "type": "Cairo",
 "total_count": 99,
@@ -18,8 +18,8 @@
 "min_digit": 73,
 "min_special": 62,
 "valid_prefix": 99,
-"valid_suffix": 94,
-"score": 1
+"valid_suffix": 99,
+"score": 2
 },{
 "type": "HernsPW",
 "total_count": 91,
@@ -29,8 +29,8 @@
 "min_digit": 85,
 "min_special": 71,
 "valid_prefix": 91,
-"valid_suffix": 90,
-"score": 4
+"valid_suffix": 91,
+"score": 5
 },{
 "type": "Orion1.15",
 "total_count": 85,
@@ -39,7 +39,7 @@
 "min_upper": 84,
 "min_digit": 73,
 "min_special": 0,
-"valid_prefix": 84,
+"valid_prefix": 83,
 "valid_suffix": 85,
 "score": 3
 },{
@@ -51,6 +51,6 @@
 "min_digit": 0,
 "min_special": 55,
 "valid_prefix": 74,
-"valid_suffix": 72,
-"score": 3
+"valid_suffix": 74,
+"score": 4
 }]}
